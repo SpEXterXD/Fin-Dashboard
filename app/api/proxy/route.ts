@@ -55,7 +55,7 @@ function validateUrl(url: string): { isValid: boolean; parsed?: URL; error?: str
     }
     
     return { isValid: true, parsed }
-  } catch (error) {
+  } catch {
     return { isValid: false, error: "Invalid URL format" }
   }
 }

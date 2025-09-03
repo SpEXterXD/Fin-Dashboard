@@ -12,29 +12,30 @@ export interface FormatOptions {
 export function formatValue(value: unknown, options?: FormatOptions | FormatType): string {
   // Handle legacy format parameter
   const formatType = typeof options === 'string' ? options : options?.type
+  const formatOptions = typeof options === 'string' ? undefined : options
   
   if (value == null || value === undefined) return "-"
   
   try {
     switch (formatType) {
       case "currency":
-        return formatCurrency(value, options)
+        return formatCurrency(value, formatOptions)
       case "percent":
-        return formatPercent(value, options)
+        return formatPercent(value, formatOptions)
       case "date":
-        return formatDate(value, options)
+        return formatDate(value, formatOptions)
       case "datetime":
-        return formatDateTime(value, options)
+        return formatDateTime(value, formatOptions)
       case "number":
       case undefined:
-        return formatNumber(value, options)
+        return formatNumber(value, formatOptions)
       case "text":
       default:
-        return formatText(value, options)
+        return formatText(value, formatOptions)
     }
   } catch (error) {
     console.warn('Format error:', error)
-    return formatText(value, options)
+    return formatText(value, formatOptions)
   }
 }
 
@@ -84,7 +85,7 @@ function formatNumber(value: unknown, options?: FormatOptions): string {
 function formatDate(value: unknown, options?: FormatOptions): string {
   if (!isValidDate(value)) return formatText(value, options)
   
-  const date = new Date(value)
+  const date = new Date(value as string | number | Date)
   const formatOptions: Intl.DateTimeFormatOptions = options?.dateFormat || {
     year: 'numeric',
     month: 'short',
@@ -98,7 +99,7 @@ function formatDate(value: unknown, options?: FormatOptions): string {
 function formatDateTime(value: unknown, options?: FormatOptions): string {
   if (!isValidDate(value)) return formatText(value, options)
   
-  const date = new Date(value)
+  const date = new Date(value as string | number | Date)
   const formatOptions: Intl.DateTimeFormatOptions = options?.dateFormat || {
     year: 'numeric',
     month: 'short',

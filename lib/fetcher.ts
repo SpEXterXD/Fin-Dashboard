@@ -82,15 +82,12 @@ export async function fetchViaProxy(
       
       if (!response.ok) {
         let errorMessage = `Proxy error: ${response.status}`
-        let errorDetails = ''
         
         try {
           const errorData = await response.json()
           errorMessage = errorData.error || errorMessage
-          errorDetails = errorData.details || errorData.code || ''
         } catch {
           // If we can't parse the error response, use the status text
-          errorDetails = response.statusText
         }
         
         throw new FetcherError(

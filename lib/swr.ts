@@ -8,8 +8,6 @@ export const defaultSWRConfig: SWRConfiguration = {
   revalidateIfStale: true,
   
   // Error handling
-  errorRetryCount: 3,
-  errorRetryInterval: 5000,
   onError: (error, key) => {
     console.error('SWR error for key:', key, error)
   },
@@ -19,26 +17,7 @@ export const defaultSWRConfig: SWRConfiguration = {
   focusThrottleInterval: 5000,
   
   // Cache
-  keepPreviousData: true,
-  
-  // Timeout
-  timeout: 30000,
-  
-  // Custom error retry logic
-  errorRetryCount: (error, key, config) => {
-    // Don't retry on 4xx errors
-    if (error?.status >= 400 && error?.status < 500) {
-      return 0
-    }
-    
-    // Retry up to 3 times for other errors
-    return 3
-  },
-  
-  // Exponential backoff for retries
-  errorRetryInterval: (index) => {
-    return Math.min(1000 * Math.pow(2, index), 10000)
-  }
+  keepPreviousData: true
 }
 
 // Widget-specific SWR configuration

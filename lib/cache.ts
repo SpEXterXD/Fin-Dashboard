@@ -4,6 +4,12 @@ export interface CacheConfig {
   cleanupIntervalMs: number
 }
 
+interface CacheEntry<T> {
+  value: T
+  expiresAt: number
+  createdAt: number
+}
+
 const DEFAULT_CONFIG: CacheConfig = {
   defaultTtlSeconds: 10,
   maxSize: 1000,
@@ -152,7 +158,7 @@ export class TTLCache<T = Response> {
 }
 
 // Global cache instance for responses
-export const responseCache = new TTLCache<Response>(10)
+export const responseCache = new TTLCache<Response>({ defaultTtlSeconds: 10 })
 
 // Export for testing and advanced usage
 export { TTLCache as createTTLCache }

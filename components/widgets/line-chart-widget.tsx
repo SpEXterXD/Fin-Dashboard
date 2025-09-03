@@ -6,13 +6,12 @@ import { fetchViaProxy } from "@/lib/fetcher"
 import { getByPath } from "@/lib/json-utils"
 import type { WidgetConfig } from "@/types/widget-config"
 import { useEffect, useState } from "react"
-import { swrOptions } from "@/lib/swr"
 
 export function LineChartWidget({ widget }: { widget: WidgetConfig }) {
   const { data, error, isLoading, mutate } = useSWR(
     widget.endpoint ? ["w", widget.endpoint] : null,
     async () => fetchViaProxy(widget.endpoint),
-    { ...swrOptions, refreshInterval: widget.refreshInterval },
+    { refreshInterval: widget.refreshInterval },
   )
 
   const [lastUpdated, setLastUpdated] = useState<string>("")
@@ -42,10 +41,6 @@ export function LineChartWidget({ widget }: { widget: WidgetConfig }) {
           The demo API key has reached its daily limit (25 requests). 
           Try again tomorrow or use a premium API key.
         </p>
-        <details className="text-xs text-muted-foreground">
-          <summary>Error details</summary>
-          <p className="mt-1">{rateLimitError}</p>
-        </details>
       </div>
     )
   }
@@ -80,30 +75,11 @@ export function LineChartWidget({ widget }: { widget: WidgetConfig }) {
   const xKey = isAlphaVantageDaily ? "date" : (widget.options?.xKey || "date")
   const yKey = isAlphaVantageDaily ? "close" : (widget.options?.yKey || "close")
 
-  // Debug logging
-  console.log('Line chart data:', { 
-    data, 
-    series, 
-    xKey, 
-    yKey, 
-    widget, 
-    isAlphaVantageDaily,
-    seriesLength: series.length,
-    firstItem: series[0],
-    hasTimeSeries: Boolean((data as Record<string, unknown>)?.["Time Series (Daily)"])
-  })
-
   // Show error if no data points
   if (series.length === 0) {
     return (
       <div className="space-y-2">
         <p className="text-sm text-destructive">No data points found in response.</p>
-        <details className="text-xs text-muted-foreground">
-          <summary>Debug info</summary>
-          <pre className="mt-2 overflow-auto text-xs">
-            {JSON.stringify({ data, series, xKey, yKey, isAlphaVantageDaily }, null, 2)}
-          </pre>
-        </details>
       </div>
     )
   }

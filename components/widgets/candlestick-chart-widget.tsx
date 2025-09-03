@@ -6,13 +6,12 @@ import { fetchViaProxy } from "@/lib/fetcher"
 import { getByPath } from "@/lib/json-utils"
 import type { WidgetConfig } from "@/types/widget-config"
 import { useEffect, useState } from "react"
-import { swrOptions } from "@/lib/swr"
 
 export function CandlestickChartWidget({ widget }: { widget: WidgetConfig }) {
   const { data, error, isLoading, mutate } = useSWR(
     widget.endpoint ? ["w", widget.endpoint] : null,
     async () => fetchViaProxy(widget.endpoint),
-    { ...swrOptions, refreshInterval: widget.refreshInterval },
+    { refreshInterval: widget.refreshInterval },
   )
 
   const [lastUpdated, setLastUpdated] = useState<string>("")
@@ -42,10 +41,6 @@ export function CandlestickChartWidget({ widget }: { widget: WidgetConfig }) {
           The demo API key has reached its daily limit (25 requests). 
           Try again tomorrow or use a premium API key.
         </p>
-        <details className="text-xs text-muted-foreground">
-          <summary>Error details</summary>
-          <p className="mt-1">{rateLimitError}</p>
-        </details>
       </div>
     )
   }

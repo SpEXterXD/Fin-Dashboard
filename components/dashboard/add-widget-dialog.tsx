@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useCallback } from "react"
 import useSWR from "swr"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -34,12 +34,63 @@ export function AddWidgetDialog({
   const [lKey, setLKey] = useState("")
   const [cKey, setCKey] = useState("")
 
-  const { data, error, isValidating, mutate } = useSWR(url ? ["test", url] : null, async () => fetchViaProxy(url), {
-    revalidateOnFocus: false,
-  })
+  const { data, error, isValidating, mutate } = useSWR(
+    url ? ["test", url] : null, 
+    async () => {
+      try {
+        return await fetchViaProxy(url)
+      } catch (err) {
+        console.error('Test fetch failed:', err)
+        throw err
+      }
+    }, 
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 5000, // Prevent rapid refetches
+      errorRetryCount: 1, // Limit retries for testing
+      errorRetryInterval: 1000,
+    }
+  )
 
-  const paths = useMemo(() => (data ? flattenJsonPaths(data) : []), [data])
-  const filtered = useMemo(() => (query ? matchPaths(paths, query) : paths), [paths, query])
+  const handleTest = useCallback(async () => {
+    if (!url.trim()) {
+      return
+    }
+    
+    try {
+      // Add a timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Test timeout')), 15000) // 15 second timeout
+      })
+      
+      await Promise.race([
+        mutate(),
+        timeoutPromise
+      ])
+    } catch (err) {
+      console.error('Test failed:', err)
+      // The error will be handled by SWR and displayed in the UI
+    }
+  }, [url, mutate])
+
+  const paths = useMemo(() => {
+    if (!data) return []
+    try {
+      return flattenJsonPaths(data)
+    } catch (err) {
+      console.error('Error flattening JSON paths:', err)
+      return []
+    }
+  }, [data])
+  const filtered = useMemo(() => {
+    try {
+      return query ? matchPaths(paths, query) : paths
+    } catch (err) {
+      console.error('Error filtering paths:', err)
+      return paths
+    }
+  }, [paths, query])
 
   const togglePath = (p: string) => setSelected((arr) => (arr.includes(p) ? arr.filter((x) => x !== p) : [...arr, p]))
 
@@ -116,8 +167,8 @@ export function AddWidgetDialog({
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
-              <Button type="button" onClick={mutate} variant="secondary">
-                Test
+              <Button type="button" onClick={handleTest} variant="secondary" disabled={!url.trim() || isValidating}>
+                {isValidating ? "Testing..." : "Test"}
               </Button>
             </div>
             {isValidating ? (

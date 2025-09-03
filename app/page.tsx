@@ -68,7 +68,7 @@ function DashboardInner() {
     return () => clearTimeout(timeoutId)
   }, [widgets, mounted, isLoading])
 
-  const handleCreateWidget = useCallback((widget: any) => {
+  const handleCreateWidget = useCallback((widget: WidgetConfig) => {
     try {
       addWidget(widget)
       setOpen(false)
