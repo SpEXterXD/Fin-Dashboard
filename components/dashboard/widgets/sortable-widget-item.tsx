@@ -17,7 +17,11 @@ export function SortableWidgetItem({ id, widget }: { id: string; widget: WidgetC
   const [open, setOpen] = useState(false)
 
   return (
-    <div ref={setNodeRef} style={style} className="min-h-[220px]">
+    <div 
+      ref={setNodeRef} 
+      style={style} 
+      className={`${widget.type === 'table' ? 'min-h-[300px]' : 'min-h-[280px]'} ${widget.type === 'table' ? 'h-auto' : 'h-full'}`}
+    >
       <WidgetCard
         title={widget.title}
         onRemove={() => removeWidget(widget.id)}

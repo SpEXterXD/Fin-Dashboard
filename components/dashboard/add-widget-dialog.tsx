@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -43,12 +43,30 @@ export function AddWidgetDialog({
 
   const togglePath = (p: string) => setSelected((arr) => (arr.includes(p) ? arr.filter((x) => x !== p) : [...arr, p]))
 
+  const isAlphaVantageDaily = useMemo(() => Boolean((data as Record<string, unknown>)?.["Time Series (Daily)"]), [data])
+
+  // Auto-fill sensible defaults for Alpha Vantage daily series
+  useEffect(() => {
+    if (!isAlphaVantageDaily || display !== "chart") return
+    if (chartKind === "line") {
+      if (!xKey) setXKey("date")
+      if (!yKey) setYKey("close")
+    } else {
+      if (!xKey) setXKey("date")
+      if (!oKey) setOKey("open")
+      if (!hKey) setHKey("high")
+      if (!lKey) setLKey("low")
+      if (!cKey) setCKey("close")
+    }
+  }, [isAlphaVantageDaily, display, chartKind, xKey, yKey, oKey, hKey, lKey, cKey])
+
   const canSubmit = useMemo(() => {
     if (!url || error) return false
     if (display !== "chart") return true
+    if (isAlphaVantageDaily) return true
     if (chartKind === "line") return Boolean(xKey && yKey)
     return Boolean(xKey && oKey && hKey && lKey && cKey)
-  }, [url, error, display, chartKind, xKey, yKey, oKey, hKey, lKey, cKey])
+  }, [url, error, display, chartKind, xKey, yKey, oKey, hKey, lKey, cKey, isAlphaVantageDaily])
 
   function handleCreate() {
     const opts: WidgetConfig["options"] | undefined =

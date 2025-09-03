@@ -32,14 +32,54 @@ export function CandlestickChartWidget({ widget }: { widget: WidgetConfig }) {
     )
   if (!data) return <p className="text-sm text-muted-foreground">No data.</p>
 
-  const arrPath = widget.fieldPaths.find((p) => Array.isArray(getByPath(data, p)))
-  const series = (arrPath ? getByPath(data, arrPath) : Array.isArray(data) ? data : []) as Record<string, unknown>[]
+  // Check for Alpha Vantage rate limit error
+  const rateLimitError = (data as Record<string, unknown>)?.["Information"] as string
+  if (rateLimitError && rateLimitError.includes("rate limit")) {
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-destructive">Alpha Vantage API Rate Limit Reached</p>
+        <p className="text-xs text-muted-foreground">
+          The demo API key has reached its daily limit (25 requests). 
+          Try again tomorrow or use a premium API key.
+        </p>
+        <details className="text-xs text-muted-foreground">
+          <summary>Error details</summary>
+          <p className="mt-1">{rateLimitError}</p>
+        </details>
+      </div>
+    )
+  }
 
-  const xKey = widget.options?.xKey || "date"
-  const oKey = widget.options?.oKey || "open"
-  const hKey = widget.options?.hKey || "high"
-  const lKey = widget.options?.lKey || "low"
-  const cKey = widget.options?.cKey || "close"
+  function normalizeSeries(input: unknown): Record<string, unknown>[] {
+    const tsDaily = (input as Record<string, unknown>)?.["Time Series (Daily)"] as
+      | Record<string, Record<string, string>>
+      | undefined
+    if (tsDaily && typeof tsDaily === "object") {
+      const rows = Object.entries(tsDaily).map(([date, values]) => ({
+        date,
+        open: Number(values["1. open"] ?? NaN),
+        high: Number(values["2. high"] ?? NaN),
+        low: Number(values["3. low"] ?? NaN),
+        close: Number(values["4. close"] ?? NaN),
+        volume: Number(values["5. volume"] ?? NaN),
+      }))
+      rows.sort((a, b) => String(a.date).localeCompare(String(b.date)))
+      return rows
+    }
+    const arrPath = widget.fieldPaths.find((p) => Array.isArray(getByPath(input, p)))
+    const series = (arrPath ? getByPath(input, arrPath) : Array.isArray(input) ? input : []) as Record<string, unknown>[]
+    return series
+  }
+
+  const series = normalizeSeries(data)
+
+  // Auto-detect keys based on data structure
+  const isAlphaVantageDaily = Boolean((data as Record<string, unknown>)?.["Time Series (Daily)"])
+  const xKey = isAlphaVantageDaily ? "date" : (widget.options?.xKey || "date")
+  const oKey = isAlphaVantageDaily ? "open" : (widget.options?.oKey || "open")
+  const hKey = isAlphaVantageDaily ? "high" : (widget.options?.hKey || "high")
+  const lKey = isAlphaVantageDaily ? "low" : (widget.options?.lKey || "low")
+  const cKey = isAlphaVantageDaily ? "close" : (widget.options?.cKey || "close")
 
   const transformedData = series.map((item) => ({
     [xKey]: item?.[xKey] as unknown as string,
@@ -58,8 +98,8 @@ export function CandlestickChartWidget({ widget }: { widget: WidgetConfig }) {
             <XAxis dataKey={xKey} />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="high" fill="hsl(var(--chart-1))" />
-            <Bar dataKey="low" fill="hsl(var(--chart-2))" />
+            <Bar dataKey="high" fill="var(--chart-1)" />
+            <Bar dataKey="low" fill="var(--chart-2)" />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
