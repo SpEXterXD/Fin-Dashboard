@@ -25,7 +25,7 @@ export function CardWidget({ widget }: { widget: WidgetConfig }) {
         return (
           <div 
             key={p} 
-            className="group relative rounded-lg border border-border/40 bg-gradient-to-br from-card/50 to-card/30 p-4 transition-all duration-200 hover:bg-gradient-to-br hover:from-card/70 hover:to-card/50 hover:border-primary/30 hover:shadow-md"
+            className="group relative rounded-lg border border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-4 transition-all duration-200 hover:bg-gradient-to-br hover:from-card/70 hover:to-card/50 hover:border-primary/50 hover:shadow-md shadow-sm"
             style={{ animationDelay: `${index * 30}ms` }}
           >
             <div className="relative">

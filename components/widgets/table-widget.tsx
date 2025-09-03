@@ -9,7 +9,7 @@ import type { WidgetConfig } from "@/types/widget-config"
 import { useEffect, useMemo, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { ArrowUpDown } from "lucide-react"
-import { swrOptions } from "@/lib/swr"
+import { swrConfigs } from "@/lib/swr"
 
 const PAGE_SIZE = 8 // Reduced to show more rows in view
 const MIN_ROW_HEIGHT = 44 // Slightly reduced row height
@@ -20,7 +20,7 @@ export function TableWidget({ widget }: { widget: WidgetConfig }) {
   const { data, error, isLoading, mutate } = useSWR(
     widget.endpoint ? ["w", widget.endpoint] : null,
     async () => fetchViaProxy(widget.endpoint),
-    { ...swrOptions, refreshInterval: widget.refreshInterval },
+    { ...swrConfigs.widget, refreshInterval: widget.refreshInterval },
   )
 
   const [q, setQ] = useState("")

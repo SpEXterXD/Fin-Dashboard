@@ -23,11 +23,11 @@ export function WidgetCard({
   children: ReactNode
 }) {
   return (
-    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 border-border/30 bg-card/40 backdrop-blur-md hover:bg-card/60 relative">
+    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 border border-border/60 bg-card/40 backdrop-blur-md hover:bg-card/60 relative shadow-sm hover:shadow-md">
       {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-1/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       
-      <CardHeader className="relative flex flex-row items-center justify-between space-y-0 border-b border-border/30 bg-gradient-to-r from-card/80 to-card/60 p-5">
+      <CardHeader className="relative flex flex-row items-center justify-between space-y-0 border-b border-border/40 bg-gradient-to-r from-card/80 to-card/60 p-5">
         <div className="flex items-center gap-3">
           <button
             aria-label="Drag widget"
@@ -44,7 +44,7 @@ export function WidgetCard({
               {meta ? (
                 <Badge 
                   variant="outline" 
-                  className="px-3 py-1 text-xs font-semibold border-primary/30 text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
+                  className="px-3 py-1 text-xs font-semibold border-primary/40 text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
                 >
                   {meta}
                 </Badge>

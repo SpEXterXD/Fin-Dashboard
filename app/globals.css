@@ -4,76 +4,76 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Light (Olive/Green) */
-  --background: #f3f5e7;
-  --foreground: #162117;
-  --card: #f7f8ec;
-  --card-foreground: #162117;
-  --popover: #f7f8ec;
-  --popover-foreground: #162117;
-  --primary: #6b8f5a; /* olive */
-  --primary-foreground: #0f1410;
-  --secondary: #e5ecd3;
-  --secondary-foreground: #1c261b;
-  --muted: #e8ecd9;
-  --muted-foreground: #6a735e;
-  --accent: #e5ecd3;
-  --accent-foreground: #1c261b;
-  --destructive: #b94b4b;
+  /* Light Mode - Modern Financial Dashboard */
+  --background: #fafbfc;
+  --foreground: #1a1f2e;
+  --card: #ffffff;
+  --card-foreground: #1a1f2e;
+  --popover: #ffffff;
+  --popover-foreground: #1a1f2e;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #475569;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --accent: #f1f5f9;
+  --accent-foreground: #475569;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #d8dfc6;
-  --input: #d8dfc6;
-  --ring: #a7bf8e;
-  --chart-1: #6b8f5a; /* line */
-  --chart-2: #8bb47a;
-  --chart-3: #d0b45a; /* gold */
-  --chart-4: #6cb3c7; /* teal */
-  --chart-5: #e58f7b; /* salmon */
-  --radius: 0.625rem;
-  --sidebar: #f5f7ea;
-  --sidebar-foreground: #162117;
-  --sidebar-primary: #6b8f5a;
-  --sidebar-primary-foreground: #0f1410;
-  --sidebar-accent: #e5ecd3;
-  --sidebar-accent-foreground: #1c261b;
-  --sidebar-border: #d8dfc6;
-  --sidebar-ring: #a7bf8e;
+  --border: #cbd5e1;
+  --input: #cbd5e1;
+  --ring: #3b82f6;
+  --chart-1: #2563eb; /* primary blue */
+  --chart-2: #7c3aed; /* purple */
+  --chart-3: #059669; /* emerald */
+  --chart-4: #dc2626; /* red */
+  --chart-5: #ea580c; /* orange */
+  --radius: 0.75rem;
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #1a1f2e;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #475569;
+  --sidebar-border: #cbd5e1;
+  --sidebar-ring: #3b82f6;
 }
 
 .dark {
-  /* Dark (Olive/Green) */
-  --background: #0e1510;
-  --foreground: #e6f0df;
-  --card: #111a13;
-  --card-foreground: #e6f0df;
-  --popover: #111a13;
-  --popover-foreground: #e6f0df;
-  --primary: #8ecb7f;
-  --primary-foreground: #0e1510;
-  --secondary: #182218;
-  --secondary-foreground: #e6f0df;
-  --muted: #182218;
-  --muted-foreground: #8aa07f;
-  --accent: #182218;
-  --accent-foreground: #e6f0df;
-  --destructive: #ff6b6b;
-  --destructive-foreground: #1a1a1a;
-  --border: #1d2a1f;
-  --input: #1d2a1f;
-  --ring: #3a5a3a;
-  --chart-1: #8ecb7f;
-  --chart-2: #6ea763;
-  --chart-3: #d6b85e;
-  --chart-4: #6cb3c7;
-  --chart-5: #e58f7b;
-  --sidebar: #121a14;
-  --sidebar-foreground: #e6f0df;
-  --sidebar-primary: #8ecb7f;
-  --sidebar-primary-foreground: #0e1510;
-  --sidebar-accent: #182218;
-  --sidebar-accent-foreground: #e6f0df;
-  --sidebar-border: #1d2a1f;
-  --sidebar-ring: #3a5a3a;
+  /* Dark Mode - Professional Dark Theme */
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #334155;
+  --secondary-foreground: #f1f5f9;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --accent: #334155;
+  --accent-foreground: #f1f5f9;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #475569;
+  --input: #475569;
+  --ring: #60a5fa;
+  --chart-1: #3b82f6;
+  --chart-2: #8b5cf6;
+  --chart-3: #10b981;
+  --chart-4: #f87171;
+  --chart-5: #fb923c;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f1f5f9;
+  --sidebar-border: #475569;
+  --sidebar-ring: #60a5fa;
 }
 
 @theme inline {
@@ -145,4 +145,57 @@
 
 .widget-table-container .overflow-auto {
   width: 100%;
+}
+
+/* Enhanced widget styling for better visibility in light mode */
+.widget-card {
+  @apply border border-border/60 shadow-sm hover:shadow-md transition-all duration-200;
+}
+
+.widget-card:hover {
+  @apply border-border/80 shadow-md;
+}
+
+/* Enhanced borders for better light mode visibility */
+.border-enhanced {
+  @apply border border-border/70;
+}
+
+.border-enhanced:hover {
+  @apply border border-border/90;
+}
+
+/* Card shadows for better depth */
+.card-shadow {
+  @apply shadow-sm border border-border/50;
+}
+
+.card-shadow:hover {
+  @apply shadow-md border border-border/70;
+}
+
+/* Widget container enhancements */
+.widget-container {
+  @apply border border-border/60 rounded-lg shadow-sm bg-card/50;
+}
+
+.widget-container:hover {
+  @apply border-border/80 shadow-md;
+}
+
+/* Enhanced table borders */
+.table-widget {
+  @apply border border-border/70 rounded-lg shadow-sm;
+}
+
+.table-widget .table-header {
+  @apply border-b border-border/60;
+}
+
+.table-widget .table-row {
+  @apply border-b border-border/40;
+}
+
+.table-widget .table-row:hover {
+  @apply border-b border-border/60;
 }

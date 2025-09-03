@@ -86,9 +86,9 @@ function DashboardInner() {
   const emptyState = useMemo(() => (
     <div className="flex flex-col items-center justify-center py-20 text-center">
       <div className="relative mb-8">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-chart-1/20 rounded-full blur-xl" />
-        <div className="relative rounded-full bg-gradient-to-br from-muted/50 to-muted/30 p-8 border border-border/50 backdrop-blur-sm">
-          <Plus className="h-16 w-16 text-muted-foreground" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-chart-2/10 rounded-full blur-xl" />
+        <div className="relative rounded-full bg-gradient-to-br from-card/80 to-card/60 p-8 border border-border/30 backdrop-blur-sm shadow-lg">
+          <Plus className="h-16 w-16 text-primary" />
         </div>
       </div>
       <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
@@ -99,7 +99,7 @@ function DashboardInner() {
       </p>
       <Button 
         onClick={handleAddWidget}
-        className="gap-2 bg-gradient-to-r from-primary/primary-90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
+        className="gap-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
         size="lg"
       >
         <Plus className="h-4 w-4" /> Add Your First Widget
