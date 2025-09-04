@@ -66,9 +66,26 @@ export async function fetchViaProxy(
   
   let lastError: Error
   
+  // Ensure we pass a fully qualified upstream URL to the proxy
+  const ensureAbsoluteUrl = (raw: string): string => {
+    try {
+      // Already absolute
+      return new URL(raw).toString()
+    } catch {
+      // Try prefixing https:// for host-like inputs
+      try {
+        return new URL(`https://${raw}`).toString()
+      } catch {
+        // Give up; let caller see a clear error
+        throw new FetcherError('Invalid upstream URL', 400, raw)
+      }
+    }
+  }
+
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const encoded = encodeURIComponent(url)
+      const absolute = ensureAbsoluteUrl(url)
+      const encoded = encodeURIComponent(absolute)
       const response = await fetchWithTimeout(
         `/api/proxy?url=${encoded}`,
         { 

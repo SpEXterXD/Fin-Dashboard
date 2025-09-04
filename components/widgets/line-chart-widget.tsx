@@ -1,13 +1,15 @@
 "use client"
 
 import useSWR from "swr"
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area } from "recharts"
 import { fetchViaProxy } from "@/lib/fetcher"
 import { getByPath } from "@/lib/json-utils"
 import type { WidgetConfig } from "@/types/widget-config"
 import { useEffect, useState } from "react"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function LineChartWidget({ widget }: { widget: WidgetConfig }) {
+  const isMobile = useIsMobile()
   const { data, error, isLoading, mutate } = useSWR(
     widget.endpoint ? ["w", widget.endpoint] : null,
     async () => fetchViaProxy(widget.endpoint),
@@ -75,8 +77,25 @@ export function LineChartWidget({ widget }: { widget: WidgetConfig }) {
   const xKey = isAlphaVantageDaily ? "date" : (widget.options?.xKey || "date")
   const yKey = isAlphaVantageDaily ? "close" : (widget.options?.yKey || "close")
 
+  // Clean and constrain dataset for better readability and performance
+  const cleanSeries = (Array.isArray(series) ? series : [])
+    .filter((row) => Number.isFinite(Number((row as any)?.[yKey])))
+    .slice(-100)
+
+  // Formatters
+  const formatNumber = (n: number): string =>
+    new Intl.NumberFormat(undefined, { maximumFractionDigits: 2, notation: "compact" }).format(n)
+  const formatDate = (s: string): string => {
+    // Try to format ISO-like dates; fallback to raw label
+    const d = new Date(s)
+    if (!Number.isNaN(d.getTime())) {
+      return d.toLocaleDateString(undefined, { month: "short", day: "2-digit", year: undefined })
+    }
+    return s
+  }
+
   // Show error if no data points
-  if (series.length === 0) {
+  if (cleanSeries.length === 0) {
     return (
       <div className="space-y-2">
         <p className="text-sm text-destructive">No data points found in response.</p>
@@ -86,21 +105,45 @@ export function LineChartWidget({ widget }: { widget: WidgetConfig }) {
 
   return (
     <section role="region" aria-label={`${widget.title} chart`} className="space-y-2">
-      <div className="h-[280px]">
+      <div className="h-[340px]" style={{ height: isMobile ? 260 : 340 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={series} margin={{ left: 12, right: 12, top: 10, bottom: 10 }}>
+          <LineChart data={cleanSeries} margin={{ left: 12, right: 12, top: 10, bottom: 10 }}>
+            <defs>
+              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="var(--chart-1)" stopOpacity="1" />
+                <stop offset="100%" stopColor="var(--chart-1)" stopOpacity="0.6" />
+              </linearGradient>
+              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--chart-1)" stopOpacity="0.25" />
+                <stop offset="100%" stopColor="var(--chart-1)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={xKey} />
-            <YAxis />
-            <Tooltip />
+            <XAxis dataKey={xKey} tickFormatter={formatDate} minTickGap={isMobile ? 36 : 24} />
+            <YAxis tickFormatter={(v) => formatNumber(Number(v))} width={isMobile ? 44 : 54} />
+            <Tooltip 
+              formatter={(value: unknown) => formatNumber(Number(value))}
+              labelFormatter={(label: unknown) => typeof label === 'string' ? formatDate(label) : String(label)}
+            />
+            <Area 
+              isAnimationActive
+              type="monotone"
+              dataKey={yKey}
+              stroke="none"
+              fill="url(#areaGradient)"
+              fillOpacity={1}
+              dot={false}
+              activeDot={false}
+            />
             <Line 
-              isAnimationActive 
+              isAnimationActive
+              animationDuration={600}
               type="monotone" 
               dataKey={yKey} 
-              stroke="var(--chart-1)" 
-              strokeWidth={3}
-              dot={{ fill: "var(--chart-1)", strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, fill: "var(--chart-1)" }}
+              stroke="url(#lineGradient)" 
+              strokeWidth={isMobile ? 2 : 3}
+              dot={isMobile ? false : { fill: "var(--chart-1)", strokeWidth: 2, r: 4 }}
+              activeDot={isMobile ? { r: 4, fill: "var(--chart-1)" } : { r: 6, fill: "var(--chart-1)" }}
             />
           </LineChart>
         </ResponsiveContainer>

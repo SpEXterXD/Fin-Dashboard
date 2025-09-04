@@ -6,8 +6,10 @@ import { fetchViaProxy } from "@/lib/fetcher"
 import { getByPath } from "@/lib/json-utils"
 import type { WidgetConfig } from "@/types/widget-config"
 import { useEffect, useState } from "react"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function CandlestickChartWidget({ widget }: { widget: WidgetConfig }) {
+  const isMobile = useIsMobile()
   const { data, error, isLoading, mutate } = useSWR(
     widget.endpoint ? ["w", widget.endpoint] : null,
     async () => fetchViaProxy(widget.endpoint),
@@ -76,25 +78,30 @@ export function CandlestickChartWidget({ widget }: { widget: WidgetConfig }) {
   const lKey = isAlphaVantageDaily ? "low" : (widget.options?.lKey || "low")
   const cKey = isAlphaVantageDaily ? "close" : (widget.options?.cKey || "close")
 
-  const transformedData = series.map((item) => ({
-    [xKey]: item?.[xKey] as unknown as string,
-    open: Number(item?.[oKey] ?? NaN),
-    high: Number(item?.[hKey] ?? NaN),
-    low: Number(item?.[lKey] ?? NaN),
-    close: Number(item?.[cKey] ?? NaN),
-  }))
+  const transformedData = series
+    .map((item) => ({
+      [xKey]: item?.[xKey] as unknown as string,
+      open: Number(item?.[oKey] ?? NaN),
+      high: Number(item?.[hKey] ?? NaN),
+      low: Number(item?.[lKey] ?? NaN),
+      close: Number(item?.[cKey] ?? NaN),
+    }))
+    // Remove invalid points that can break Bar rendering
+    .filter((d) => [d.open, d.high, d.low, d.close].every((v) => Number.isFinite(v)))
+    // Keep most recent 100 points for readability (Alpha Vantage compact)
+    .slice(-100)
 
   return (
     <section role="region" aria-label={`${widget.title} candlestick chart`} className="space-y-2">
-      <div className="h-[280px]">
+      <div className="h-[340px]" style={{ height: isMobile ? 260 : 340 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={transformedData} margin={{ left: 12, right: 12, top: 10, bottom: 10 }}>
+          <ComposedChart data={transformedData} margin={{ left: 10, right: 10, top: 8, bottom: 8 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={xKey} />
-            <YAxis />
+            <XAxis dataKey={xKey} minTickGap={isMobile ? 36 : 24} />
+            <YAxis width={isMobile ? 44 : 54} />
             <Tooltip />
-            <Bar dataKey="high" fill="var(--chart-1)" />
-            <Bar dataKey="low" fill="var(--chart-2)" />
+            <Bar dataKey="high" fill="var(--chart-1)" maxBarSize={isMobile ? 6 : 10} />
+            <Bar dataKey="low" fill="var(--chart-2)" maxBarSize={isMobile ? 6 : 10} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>

@@ -20,7 +20,7 @@ export function SortableWidgetItem({ id, widget }: { id: string; widget: WidgetC
     <div 
       ref={setNodeRef} 
       style={style} 
-      className={`${widget.type === 'table' ? 'min-h-[300px]' : 'min-h-[280px]'} ${widget.type === 'table' ? 'h-auto' : 'h-full'}`}
+      className={`${widget.type === 'table' ? 'min-h-[300px]' : 'min-h-[360px]'} ${widget.type === 'table' ? 'h-auto' : 'h-full'}`}
     >
       <WidgetCard
         title={widget.title}
