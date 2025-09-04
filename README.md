@@ -83,6 +83,12 @@ fin-dashboard/
 - **Lazy Loading**: Widget components and heavy dependencies
 - **Memory Safety**: Automatic cleanup and resource limits
 
+## DEMO API URL 
+
+- **Card** -> https://finnhub.io/api/v1/stock/market-status?exchange=US&token=demo [Replace "demo" with your own key]
+- **Table** -> https://finnhub.io/api/v1/search?q=apple&exchange=US&token=demo [Replace "demo" with your own key]
+- **Line/Candle** -> https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=demo [Replace "demo" with your own key]
+
 ## DEMO
 
 https://github.com/user-attachments/assets/62c51a24-01a7-4349-ac28-17a797d6f30d
