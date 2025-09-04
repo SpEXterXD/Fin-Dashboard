@@ -83,5 +83,8 @@ fin-dashboard/
 - **Lazy Loading**: Widget components and heavy dependencies
 - **Memory Safety**: Automatic cleanup and resource limits
 
+## DEMO
+
+https://github.com/user-attachments/assets/62c51a24-01a7-4349-ac28-17a797d6f30d
 
 
