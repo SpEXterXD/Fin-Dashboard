@@ -30,11 +30,12 @@ function validateWidgetConfig(widget: WidgetConfig): { isValid: boolean; errors:
     errors.push('Widget must have a title')
   }
   
-  if (!widget.type || !['card', 'table', 'chart'].includes(widget.type)) {
+  if (!widget.type || !['card', 'table', 'chart', 'realtime'].includes(widget.type)) {
     errors.push('Widget must have a valid type')
   }
   
-  if (!widget.endpoint || typeof widget.endpoint !== 'string') {
+  // Endpoint is required for non-realtime widgets
+  if (widget.type !== 'realtime' && (!widget.endpoint || typeof widget.endpoint !== 'string')) {
     errors.push('Widget must have an endpoint')
   }
   
@@ -42,8 +43,19 @@ function validateWidgetConfig(widget: WidgetConfig): { isValid: boolean; errors:
     errors.push('Widget must have a refresh interval of at least 5 seconds')
   }
   
-  if (!Array.isArray(widget.fieldPaths)) {
+  // Field paths are required for non-realtime widgets
+  if (widget.type !== 'realtime' && !Array.isArray(widget.fieldPaths)) {
     errors.push('Widget must have field paths array')
+  }
+  
+  // Validate real-time specific options
+  if (widget.type === 'realtime') {
+    if (!widget.realtime?.enabled) {
+      errors.push('Real-time widget must have realtime.enabled set to true')
+    }
+    if (!widget.realtime?.symbol || typeof widget.realtime.symbol !== 'string') {
+      errors.push('Real-time widget must have a symbol')
+    }
   }
   
   // Validate chart-specific options

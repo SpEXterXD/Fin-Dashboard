@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic"
 import { TableWidget } from "@/components/widgets/table-widget"
 import { CardWidget } from "@/components/widgets/card-widget"
+import { RealtimeCardWidget } from "@/components/widgets/realtime-card-widget"
 import type { WidgetConfig } from "@/types/widget-config"
 
 const LineChartWidget = dynamic(() => import("@/components/widgets/line-chart-widget").then(m => m.LineChartWidget), { ssr: false })
@@ -17,6 +18,8 @@ export function WidgetRenderer({ widget }: { widget: WidgetConfig }) {
       return <TableWidget widget={widget} />
     case "chart":
       return <LineChartWidget widget={widget} />
+    case "realtime":
+      return <RealtimeCardWidget widget={widget} />
     default:
       return <CardWidget widget={widget} />
   }

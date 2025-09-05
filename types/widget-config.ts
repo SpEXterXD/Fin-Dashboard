@@ -1,4 +1,4 @@
-export type WidgetType = "card" | "table" | "chart"
+export type WidgetType = "card" | "table" | "chart" | "realtime"
 
 export type WidgetConfig = {
   id: string
@@ -7,6 +7,11 @@ export type WidgetConfig = {
   endpoint: string
   refreshInterval: number
   fieldPaths: string[]
+  realtime?: {
+    enabled: boolean
+    symbol: string
+    apiKey?: string
+  }
   options?: {
     // generic
     format?: "currency" | "percent" | "number" | "text"

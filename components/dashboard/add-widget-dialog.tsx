@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react"
 import useSWR from "swr"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -33,6 +33,8 @@ export function AddWidgetDialog({
   const [hKey, setHKey] = useState("")
   const [lKey, setLKey] = useState("")
   const [cKey, setCKey] = useState("")
+  const [realtimeSymbol, setRealtimeSymbol] = useState("")
+  const [realtimeApiKey, setRealtimeApiKey] = useState("")
 
   const { data, error, isValidating, mutate } = useSWR(
     url ? ["test", url] : null, 
@@ -112,12 +114,15 @@ export function AddWidgetDialog({
   }, [isAlphaVantageDaily, display, chartKind, xKey, yKey, oKey, hKey, lKey, cKey])
 
   const canSubmit = useMemo(() => {
+    if (display === "realtime") {
+      return Boolean(realtimeSymbol)
+    }
     if (!url || error) return false
     if (display !== "chart") return true
     if (isAlphaVantageDaily) return true
     if (chartKind === "line") return Boolean(xKey && yKey)
     return Boolean(xKey && oKey && hKey && lKey && cKey)
-  }, [url, error, display, chartKind, xKey, yKey, oKey, hKey, lKey, cKey, isAlphaVantageDaily])
+  }, [url, error, display, chartKind, xKey, yKey, oKey, hKey, lKey, cKey, isAlphaVantageDaily, realtimeSymbol])
 
   function handleCreate() {
     const opts: WidgetConfig["options"] | undefined =
@@ -127,13 +132,22 @@ export function AddWidgetDialog({
           : { kind: "candlestick", xKey, oKey, hKey, lKey, cKey }
         : undefined
 
+    const realtimeConfig = display === "realtime" && realtimeSymbol
+      ? { 
+          enabled: true, 
+          symbol: realtimeSymbol,
+          ...(realtimeApiKey ? { apiKey: realtimeApiKey } : {})
+        }
+      : undefined
+
     const w: WidgetConfig = {
       id: crypto.randomUUID(),
       title: title || "Untitled Widget",
       type: display,
-      endpoint: url,
+      endpoint: display === "realtime" ? "" : url, // Empty endpoint for real-time widgets
       refreshInterval: Math.max(5, Number(refresh) || 30),
-      fieldPaths: selected.slice(0, 20),
+      fieldPaths: display === "realtime" ? [] : selected.slice(0, 20), // Empty field paths for real-time widgets
+      realtime: realtimeConfig,
       options: opts,
     }
     onCreate(w)
@@ -144,6 +158,9 @@ export function AddWidgetDialog({
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Add New Widget</DialogTitle>
+          <DialogDescription>
+            Create a new widget to display financial data from various APIs. Choose the widget type and configure the data source.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4">
@@ -200,6 +217,7 @@ export function AddWidgetDialog({
                   <TabsTrigger value="card">Card</TabsTrigger>
                   <TabsTrigger value="table">Table</TabsTrigger>
                   <TabsTrigger value="chart">Chart</TabsTrigger>
+                  <TabsTrigger value="realtime">Real-time</TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
@@ -255,7 +273,38 @@ export function AddWidgetDialog({
             </div>
           )}
 
-          {data && (
+          {display === "realtime" && (
+            <div className="grid gap-3 rounded-md border p-3">
+              <Label>Real-time Configuration</Label>
+              <div className="grid gap-2">
+                <div className="grid gap-1">
+                  <Label>Symbol</Label>
+                  <Input 
+                    placeholder="e.g., AAPL, BINANCE:BTCUSDT, IC MARKETS:1" 
+                    value={realtimeSymbol} 
+                    onChange={(e) => setRealtimeSymbol(e.target.value)} 
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Enter the trading symbol. Examples: AAPL (US stocks), BINANCE:BTCUSDT (crypto), IC MARKETS:1 (forex)
+                  </p>
+                </div>
+                <div className="grid gap-1">
+                  <Label>API Key (Optional)</Label>
+                  <Input 
+                    placeholder="Your Finnhub API key" 
+                    value={realtimeApiKey} 
+                    onChange={(e) => setRealtimeApiKey(e.target.value)} 
+                    type="password"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Leave empty to use environment variable NEXT_PUBLIC_FINNHUB_TOKEN
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!!data && (
             <div className="grid gap-2 rounded-md border p-3">
               <Label>Fields</Label>
               <Input placeholder="Search for fields..." value={query} onChange={(e) => setQuery(e.target.value)} />

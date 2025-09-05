@@ -79,7 +79,7 @@ export function LineChartWidget({ widget }: { widget: WidgetConfig }) {
 
   // Clean and constrain dataset for better readability and performance
   const cleanSeries = (Array.isArray(series) ? series : [])
-    .filter((row) => Number.isFinite(Number((row as any)?.[yKey])))
+    .filter((row) => Number.isFinite(Number((row as Record<string, unknown>)?.[yKey])))
     .slice(-100)
 
   // Formatters

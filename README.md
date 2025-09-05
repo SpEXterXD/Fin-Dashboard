@@ -8,6 +8,7 @@ A production-ready financial dashboard built with Next.js, React, TypeScript, an
 - **Widget System**: Create, edit, and manage multiple widget types
 - **Drag & Drop**: Intuitive reordering with accessibility support
 - **Real-time Updates**: Configurable refresh intervals per widget
+- **WebSocket Support**: Real-time financial data via Finnhub WebSocket API
 - **Responsive Design**: Mobile-first design with adaptive layouts
 - **Theme Support**: Light/dark/system themes with hydration safety
 
