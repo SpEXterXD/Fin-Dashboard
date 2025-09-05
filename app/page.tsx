@@ -110,13 +110,6 @@ function DashboardInner() {
         >
           <Plus className="h-4 w-4" /> Add Your First Widget
         </Button>
-        <Button 
-          variant="outline"
-          className="gap-2 border-border/50 hover:border-primary/50 transition-all duration-200"
-          size="lg"
-        >
-          <Sparkles className="h-4 w-4" /> View Examples
-        </Button>
       </div>
     </div>
   ), [handleAddWidget])
