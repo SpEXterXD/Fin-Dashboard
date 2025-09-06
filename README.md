@@ -16,6 +16,7 @@ A production-ready financial dashboard built with Next.js, React, TypeScript, an
 - **Card Widgets**: Display scalar values with advanced formatting options
 - **Table Widgets**: Searchable, sortable tabular data with pagination
 - **Chart Widgets**: Line charts and candlestick charts using Recharts
+- **Real-time Widgets**: Live financial data via WebSocket connections
 - **Dynamic Loading**: Lazy-loaded chart components for optimal performance
 
 ### Security & Performance
