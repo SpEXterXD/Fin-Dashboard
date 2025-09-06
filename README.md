@@ -32,13 +32,26 @@ A production-ready financial dashboard built with Next.js, React, TypeScript, an
 fin-dashboard/
 ├── app/                    # Next.js App Router
 │   ├── api/               # API routes
-│   │   └── proxy/         # Secure API proxy
+│   │   ├── proxy/         # Secure API proxy
+│   │   └── webhook/       # Webhook endpoints
+│   ├── debug/             # Debug pages
+│   ├── market-status/     # Market status page
+│   ├── reset-websocket/   # WebSocket reset page
+│   ├── test-fields/       # Field testing page
+│   ├── test-websocket/    # WebSocket testing page
+│   ├── ClientLayout.tsx   # Client-side layout wrapper
+│   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
 │   └── page.tsx           # Dashboard page
 ├── components/             # React components
 │   ├── dashboard/          # Dashboard-specific components
+│   │   ├── widget/        # Widget components
+│   │   └── widgets/       # Sortable widget items
+│   ├── debug/             # Debug components
 │   ├── ui/                # Reusable UI primitives (14 components)
-│   └── widgets/            # Widget implementations
+│   ├── widgets/           # Widget implementations
+│   ├── theme-provider.tsx # Theme context provider
+│   └── theme-toggle.tsx   # Theme toggle component
 ├── hooks/                  # Custom React hooks
 ├── lib/                    # Utility libraries
 │   ├── providers/          # API provider integrations
@@ -47,7 +60,11 @@ fin-dashboard/
 │   ├── format.ts           # Advanced data formatting
 │   ├── json-utils.ts       # JSON path utilities
 │   ├── rate-limit.ts       # Rate limiting implementation
-│   └── swr.ts              # SWR configuration profiles
+│   ├── storage.ts          # Storage utilities
+│   ├── swr.ts              # SWR configuration profiles
+│   ├── types.d.ts          # Type definitions
+│   └── utils.ts            # General utilities
+├── styles/                 # Additional styles
 ├── types/                  # TypeScript definitions
 └── public/                 # Static assets
 ```
