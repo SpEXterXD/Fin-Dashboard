@@ -107,6 +107,11 @@ fin-dashboard/
 - **Table** -> https://finnhub.io/api/v1/search?q=apple&exchange=US&token=demo [Replace "demo" with your own key]
 - **Line/Candle** -> https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=demo [Replace "demo" with your own key]
 
+## PICTURE
+
+<img width="959" height="450" alt="image" src="https://github.com/user-attachments/assets/99dcbc85-b2ba-4abf-b1a9-1bfdc868bf2a" />
+<img width="946" height="581" alt="image" src="https://github.com/user-attachments/assets/eb147626-00f0-4b5c-94b9-f1e1334fa620" />
+
 ## DEMO
 
 https://github.com/user-attachments/assets/62c51a24-01a7-4349-ac28-17a797d6f30d
